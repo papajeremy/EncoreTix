@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace EncoreTix
 {
@@ -13,7 +15,12 @@ namespace EncoreTix
                 {
                     fonts.AddFont( "OpenSans-Regular.ttf", "OpenSansRegular" );
                 } );
-
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("ExncoreTix.appsettings.json");
+            var config = new ConfigurationBuilder()
+                .AddJsonStream(stream)
+                .Build();
+            builder.Configuration.AddConfiguration( config );
             builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
