@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EncoreTix.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 
@@ -13,7 +14,8 @@ namespace EncoreTix
                 .UseMauiApp<App>()
                 .ConfigureFonts( fonts =>
                 {
-                    fonts.AddFont( "OpenSans-Regular.ttf", "OpenSansRegular" );
+                    fonts.AddFont( "Inter-Italic-VariableFont_.ttf", "Inter-Italic" );
+                    fonts.AddFont( "Inter-VariableFont.ttf", "Inter-Regular" );
                 } );
             Assembly assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("ExncoreTix.appsettings.json");
@@ -22,6 +24,7 @@ namespace EncoreTix
                 .Build();
             builder.Configuration.AddConfiguration( config );
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddSingleton<TicketMasterService>();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();
