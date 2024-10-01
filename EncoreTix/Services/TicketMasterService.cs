@@ -1,9 +1,7 @@
 ﻿using EncoreTix.Models;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace EncoreTix.Services
 {
@@ -13,8 +11,6 @@ namespace EncoreTix.Services
         private HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _url;
-        private List<Attraction> _attractions = new();
-        private Attraction _attraction = new();
 
         public TicketMasterService( IConfiguration configuration )
         {
@@ -29,9 +25,10 @@ namespace EncoreTix.Services
 
         public async Task<List<Attraction>> GetAttrations( string searchString )
         {
-            if ( string.IsNullOrWhiteSpace( searchString ) || _attractions.Count > 0 )
+            List<Attraction> attractions = new();
+            if ( string.IsNullOrWhiteSpace( searchString ) || attractions.Count > 0 )
             {
-                return _attractions;
+                return attractions;
             }
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
@@ -43,14 +40,15 @@ namespace EncoreTix.Services
                 var attractionsResult = JsonSerializer.Deserialize<Root>( jsonString );
                 if ( attractionsResult.Embedded != null && attractionsResult.Embedded.Attractions.Count > 0 )
                 {
-                    _attractions = attractionsResult.Embedded.Attractions;
+                    attractions = attractionsResult.Embedded.Attractions;
                 }
             }
-            return _attractions;
+            return attractions;
         }
 
         public async Task<Attraction> GetAttraction( string attractionId )
         {
+            Attraction attraction = new();
             if ( attractionId != null )
             {
                 _httpClient.DefaultRequestHeaders.Clear();
@@ -63,11 +61,11 @@ namespace EncoreTix.Services
                     var attractionResult = JsonSerializer.Deserialize<Attraction>( jsonString );
                     if (attractionResult != null )
                     {
-                        _attraction = attractionResult;
+                        attraction = attractionResult;
                     }
                 }
             }
-            return _attraction;
+            return attraction;
         }
 
         

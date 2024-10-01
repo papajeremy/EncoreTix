@@ -1,7 +1,35 @@
 ﻿@page "/details/{id}"
+@inject TicketMasterService TicketMasterService
+@inject NavigationManager NavigationManager
 
+@if ( Attraction != null && !string.IsNullOrEmpty( Attraction.Name ) )
+{
+    <div class="container">
+        <Card>
+            <CardHeader>
+              <Image Class="attraction-header-image" Src="@Attraction.Images.FirstOrDefault( i => i.Width > 640).Url"/>
+            </CardHeader>
+            <CardHeader>
 
+            </CardHeader>
+            <CardBody>
+
+            </CardBody>
+        </Card>
+    </div>
+}
 @code {
     [Parameter]
     public string Id { get; set; } = string.Empty;
+    private Attraction? Attraction { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Attraction = await TicketMasterService.GetAttraction( Id );
+    }
+
+    public void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
 }

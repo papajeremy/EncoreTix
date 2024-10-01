@@ -1,46 +1,50 @@
 ﻿@page "/"
 @inject TicketMasterService TicketMasterService
+@inject NavigationManager NavigationManager
 
-<InputText class="" @bind-Value="@searchString" style="margin-top: 300px;" />
-<Button class="btn-primary" @onclick="@( () => SearchAttractions(searchString))">Submit</Button>
-
-@if( Attractions != null && Attractions.Count > 0 && !string.IsNullOrEmpty(searchString) )
-{    
-        @foreach(var attraction in Attractions )
+<div class="container" id="search-bar">
+    <InputText id="text-input" @bind-Value="@searchString" />
+    <Button id="btn-primary" @onclick="@( () => SearchAttractions(searchString))">Submit</Button>
+</div>
+@if ( Attractions != null && Attractions.Count > 0 && !string.IsNullOrEmpty( searchString ) )
+{
+    <div class="search-result-container">
+        @foreach ( var attraction in Attractions )
         {
-          <Card @onclick="()=> GoToDetails(attraction)">
-            <CardBody>
-              <Image Src="@attraction.Images.First(i=>i.Width <= 640).ToString()"/>
-              <CardTitle>@attraction.Name</CardTitle>
-            </CardBody>
-          </Card>
-    }
+          <div class="search-result" @onclick="(() => GoToDetails(attraction.Id))">
+                <Image Src="@attraction.Images.First( i => i.Width <= 640 ).Url" Class="search-result-image" />
+                <h4>@attraction.Name</h4>
+            </div>
+        }
+    </div>
 
 }
-
-else if (display)
+else if ( display )
 {
-    <div id="no-results"></div>
+    <div id="no-results">
+        <Image Src="noresults.png" Id="no-results-image" />
+    </div>
 }
 
 @code {
     private string searchString = string.Empty;
     private List<Attraction> Attractions { get; set; } = new();
     bool display = false;
+    private string id = string.Empty;
 
     private async Task<List<Attraction>> SearchAttractions( string searchString )
     {
         display = false;
-        Attractions = await TicketMasterService.GetAttrations(searchString);
-        if( Attractions == null || Attractions.Count == 0 )
+        Attractions = await TicketMasterService.GetAttrations( searchString );
+        if ( Attractions == null || Attractions.Count == 0 )
         {
             display = true;
         }
         return Attractions;
-    }    
+    }
 
-    private void GoToDetails(Attraction attraction )
+    private void GoToDetails( string id )
     {
-        throw new NotImplementedException();
+        NavigationManager.NavigateTo( $"details/{id}" );
     }
 }
