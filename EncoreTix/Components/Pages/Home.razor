@@ -1,7 +1,28 @@
 ﻿@page "/"
+@inject TicketMasterService TicketMasterService
 
-<h1>Encore Tix</h1>
+<InputText class="form-text" @onclick="@( async() => { await SearchAttractions(searchString); })"/>
+@if( Attractions != null )
+{
+    <ul class="card-list">
+        @foreach(var attraction in Attractions )
+        {
+            <li @onlclick="() => GoToDetails(attraction)" class="card-item">
+              <img class="card-img" src="@attraction.Images.First( i=>i.Width <= 640)"/>
+              <div class="card-content">
+                <h2>@attraction.Name</h2>
+              </div>
+            </li>
+        }
+    </ul>
+}
 
 @code {
+    private string searchString = string.Empty;
+    private List<Attraction> Attractions { get; set; } = new();
 
+    private async Task<List<Attraction>> SearchAttractions( string searchString )
+    {
+        return Attractions = await TicketMasterService.GetAttrations(searchString);        
+    }
 }

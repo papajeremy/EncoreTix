@@ -17,8 +17,8 @@ namespace EncoreTix
                     fonts.AddFont( "Inter-Italic-VariableFont_.ttf", "Inter-Italic" );
                     fonts.AddFont( "Inter-VariableFont.ttf", "Inter-Regular" );
                 } );
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("ExncoreTix.appsettings.json");
+            var assembly = Assembly.GetExecutingAssembly();
+            using var stream = assembly.GetManifestResourceStream("EncoreTix.appsettings.json");
             var config = new ConfigurationBuilder()
                 .AddJsonStream(stream)
                 .Build();
