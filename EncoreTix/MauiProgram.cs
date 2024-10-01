@@ -24,6 +24,7 @@ namespace EncoreTix
                 .Build();
             builder.Configuration.AddConfiguration( config );
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddBlazorBootstrap();
             builder.Services.AddSingleton<TicketMasterService>();
 
 #if DEBUG

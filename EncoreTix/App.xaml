@@ -19,7 +19,7 @@
         <Setter Property="FontFamily" Value="Inter-VariableFont" />
         <Setter Property="BackgroundColor" Value="#186CA8" />
         <Setter Property="Padding" Value="5.4" />
-        <Setter Property="CornerRadius" Value="18"/>
+        <Setter Property="CornerRadius" Value="18" />
       </Style>
 
     </ResourceDictionary>

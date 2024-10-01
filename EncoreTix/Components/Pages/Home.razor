@@ -1,28 +1,46 @@
 ﻿@page "/"
 @inject TicketMasterService TicketMasterService
 
-<InputText class="form-text" @onclick="@( async() => { await SearchAttractions(searchString); })"/>
-@if( Attractions != null )
-{
-    <ul class="card-list">
+<InputText class="" @bind-Value="@searchString" style="margin-top: 300px;" />
+<Button class="btn-primary" @onclick="@( () => SearchAttractions(searchString))">Submit</Button>
+
+@if( Attractions != null && Attractions.Count > 0 && !string.IsNullOrEmpty(searchString) )
+{    
         @foreach(var attraction in Attractions )
         {
-            <li @onlclick="() => GoToDetails(attraction)" class="card-item">
-              <img class="card-img" src="@attraction.Images.First( i=>i.Width <= 640)"/>
-              <div class="card-content">
-                <h2>@attraction.Name</h2>
-              </div>
-            </li>
-        }
-    </ul>
+          <Card @onclick="()=> GoToDetails(attraction)">
+            <CardBody>
+              <Image Src="@attraction.Images.First(i=>i.Width <= 640).ToString()"/>
+              <CardTitle>@attraction.Name</CardTitle>
+            </CardBody>
+          </Card>
+    }
+
+}
+
+else if (display)
+{
+    <div id="no-results"></div>
 }
 
 @code {
     private string searchString = string.Empty;
     private List<Attraction> Attractions { get; set; } = new();
+    bool display = false;
 
     private async Task<List<Attraction>> SearchAttractions( string searchString )
     {
-        return Attractions = await TicketMasterService.GetAttrations(searchString);        
+        display = false;
+        Attractions = await TicketMasterService.GetAttrations(searchString);
+        if( Attractions == null || Attractions.Count == 0 )
+        {
+            display = true;
+        }
+        return Attractions;
+    }    
+
+    private void GoToDetails(Attraction attraction )
+    {
+        throw new NotImplementedException();
     }
 }

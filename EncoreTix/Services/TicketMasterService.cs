@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EncoreTix.Services
 {
@@ -22,7 +24,7 @@ namespace EncoreTix.Services
             _httpClient = new HttpClient()
             {
                 BaseAddress = new Uri( _url )
-            };
+            };            
         }
 
         public async Task<List<Attraction>> GetAttrations( string searchString )
@@ -33,14 +35,15 @@ namespace EncoreTix.Services
             }
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
-            var requestUrl = $"attractions.json?apikey{_apiKey}&keyword={searchString}";
+            var requestUrl = $"attractions.json?apikey={_apiKey}&keyword={searchString}&size=6";
             var response = await _httpClient.GetAsync( requestUrl );
             if ( response.IsSuccessStatusCode )
             {
-                var attractionsResult = await response.Content.ReadFromJsonAsync( AttractionContext.Default.ListAttraction );
-                if ( attractionsResult != null )
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var attractionsResult = JsonSerializer.Deserialize<Root>( jsonString );
+                if ( attractionsResult.Embedded != null && attractionsResult.Embedded.Attractions.Count > 0 )
                 {
-                    _attractions = attractionsResult;
+                    _attractions = attractionsResult.Embedded.Attractions;
                 }
             }
             return _attractions;
@@ -56,8 +59,9 @@ namespace EncoreTix.Services
                 var response = await _httpClient.GetAsync( requestUrl );
                 if ( response.IsSuccessStatusCode )
                 {
-                    var attractionResult = await response.Content.ReadFromJsonAsync( AttractionContext.Default.Attraction);
-                    if(attractionResult != null )
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    var attractionResult = JsonSerializer.Deserialize<Attraction>( jsonString );
+                    if (attractionResult != null )
                     {
                         _attraction = attractionResult;
                     }
@@ -65,5 +69,7 @@ namespace EncoreTix.Services
             }
             return _attraction;
         }
+
+        
     }
 }
