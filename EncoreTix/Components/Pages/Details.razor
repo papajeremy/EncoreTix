@@ -14,14 +14,14 @@
             <Image Class="attraction-header-image" Src="@imageUrl" />                      
         </div>
         <div class="details-sub-header">
-            <h3 id="details-sub-header-left-item">@Name</h3>
-            @if(eventVmList != null )
+            <h3 id="details-sub-header-left-item" style="margin-right: 150px;">@Name</h3>
+            @if(eventVmList != null && eventVmList.Count > 0 )
             {
                 <div id="social-media">
-                    <a href="@(eventVmList?.FirstOrDefault().HomePageUrl.DefaultIfEmpty())"><Image Src="website-icon.png" /></a>
-                    <a href="@(eventVmList?.FirstOrDefault().LastFmUrl.DefaultIfEmpty())"><Image Src="lastfm-icon.png" /></a>
-                    <a href="@(eventVmList?.FirstOrDefault().YouTubeUrl.DefaultIfEmpty())"><Image Src="youtube-icon.png" /></a>
-                    <a href="@(eventVmList?.FirstOrDefault().TwitterUrl.DefaultIfEmpty())"><Image Src="twitter-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().TwitterUrl.DefaultIfEmpty())"><Image class="social-media-icons" Src="twitter-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().YouTubeUrl.DefaultIfEmpty())"><Image class="social-media-icons" Src="youtube-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().LastFmUrl.DefaultIfEmpty())"><Image class="social-media-icons" Src="lastfm-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().HomePageUrl.DefaultIfEmpty())"><Image class="social-media-icons" Src="website-icon.png" /></a>
                 </div>
             }            
         </div>

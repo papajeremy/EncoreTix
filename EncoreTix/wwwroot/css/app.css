@@ -167,6 +167,12 @@ a, .btn-link {
   order: 1;
 }
 
+.social-media-icons {
+  height: 15px;
+  width: 20px;
+  margin: 1px;
+}
+
 .details-sub-header-right-item {
   display: flex;
   justify-self: right;
