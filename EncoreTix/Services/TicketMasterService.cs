@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EncoreTix.Services
 {
@@ -23,7 +24,7 @@ namespace EncoreTix.Services
             };            
         }
 
-        public async Task<List<Attraction>> GetAttrations( string searchString )
+        public async Task<List<Attraction>> GetAttrationsAsync( string searchString )
         {
             List<Attraction> attractions = new();
             if ( string.IsNullOrWhiteSpace( searchString ) || attractions.Count > 0 )
@@ -37,7 +38,9 @@ namespace EncoreTix.Services
             if ( response.IsSuccessStatusCode )
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
-                var attractionsResult = JsonSerializer.Deserialize<Root>( jsonString );
+                var attractionsResult = JsonSerializer.Deserialize<Root>( jsonString, new JsonSerializerOptions(){
+                    UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
+                } );
                 if ( attractionsResult.Embedded != null && attractionsResult.Embedded.Attractions.Count > 0 )
                 {
                     attractions = attractionsResult.Embedded.Attractions;
@@ -46,26 +49,29 @@ namespace EncoreTix.Services
             return attractions;
         }
 
-        public async Task<Attraction> GetAttraction( string attractionId )
+        public async Task<AttractionEvent> GetAttractionEventAsync( string attractionName )
         {
-            Attraction attraction = new();
-            if ( attractionId != null )
+            AttractionEvent attracionEvent = new();
+            if ( attractionName != null )
             {
                 _httpClient.DefaultRequestHeaders.Clear();
                 _httpClient.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
-                var requestUrl = $"attractions/{attractionId}.json?apikey={_apiKey}";
+                var requestUrl = $"events.json?apikey={_apiKey}&keyword={attractionName}&size=4";
                 var response = await _httpClient.GetAsync( requestUrl );
                 if ( response.IsSuccessStatusCode )
                 {
                     var jsonString = await response.Content.ReadAsStringAsync();
-                    var attractionResult = JsonSerializer.Deserialize<Attraction>( jsonString );
-                    if (attractionResult != null )
+                    var attractionEventResult = JsonSerializer.Deserialize<AttractionEvent>( jsonString, new JsonSerializerOptions()
                     {
-                        attraction = attractionResult;
+                        UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
+                    } );
+                    if (attractionEventResult != null )
+                    {
+                        attracionEvent = attractionEventResult;
                     }
                 }
             }
-            return attraction;
+            return attracionEvent;
         }
 
         

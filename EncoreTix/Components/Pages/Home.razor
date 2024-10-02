@@ -2,7 +2,7 @@
 @inject TicketMasterService TicketMasterService
 @inject NavigationManager NavigationManager
 
-<div class="container" id="search-bar">
+<div class="container">
     <InputText id="text-input" @bind-Value="@searchString" />
     <Button id="btn-primary" @onclick="@( () => SearchAttractions(searchString))">Submit</Button>
 </div>
@@ -11,7 +11,7 @@
     <div class="search-result-container">
         @foreach ( var attraction in Attractions )
         {
-          <div class="search-result" @onclick="(() => GoToDetails(attraction.Id))">
+          <div class="search-result" @onclick="(() => GoToDetails(attraction))">
                 <Image Src="@attraction.Images.First( i => i.Width <= 640 ).Url" Class="search-result-image" />
                 <h4>@attraction.Name</h4>
             </div>
@@ -26,16 +26,15 @@ else if ( display )
     </div>
 }
 
-@code {
-    private string searchString = string.Empty;
+@code { 
+    private string searchString = "phish";
     private List<Attraction> Attractions { get; set; } = new();
     bool display = false;
-    private string id = string.Empty;
 
     private async Task<List<Attraction>> SearchAttractions( string searchString )
     {
         display = false;
-        Attractions = await TicketMasterService.GetAttrations( searchString );
+        Attractions = await TicketMasterService.GetAttrationsAsync( searchString );
         if ( Attractions == null || Attractions.Count == 0 )
         {
             display = true;
@@ -43,8 +42,8 @@ else if ( display )
         return Attractions;
     }
 
-    private void GoToDetails( string id )
+    private void GoToDetails( Attraction attraction )
     {
-        NavigationManager.NavigateTo( $"details/{id}" );
+        NavigationManager.NavigateTo( $"details/{attraction.Name}" );
     }
 }

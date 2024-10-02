@@ -1,4 +1,5 @@
-﻿using EncoreTix.Services;
+﻿using EncoreTix.Data;
+using EncoreTix.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
@@ -26,6 +27,7 @@ namespace EncoreTix
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddBlazorBootstrap();
             builder.Services.AddSingleton<TicketMasterService>();
+            builder.Services.AddSingleton<AttractionEventDTO>();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();

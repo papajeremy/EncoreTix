@@ -1,35 +1,72 @@
-﻿@page "/details/{id}"
+﻿@page "/details/{name}"
 @inject TicketMasterService TicketMasterService
+@inject AttractionEventDTO AttractionEventDTO
 @inject NavigationManager NavigationManager
 
-@if ( Attraction != null && !string.IsNullOrEmpty( Attraction.Name ) )
+<div class="attraction-event-header">
+    <Button Class="back-button" @onclick="GoBack"><p>Go Back</p></Button>
+</div>
+
+@if ( display )
 {
-    <div class="container">
-        <Card>
-            <CardHeader>
-              <Image Class="attraction-header-image" Src="@Attraction.Images.FirstOrDefault( i => i.Width > 640).Url"/>
-            </CardHeader>
-            <CardHeader>
-
-            </CardHeader>
-            <CardBody>
-
-            </CardBody>
-        </Card>
+    <div class="attraction-container">
+        <div class="details-header">
+            <Image Class="attraction-header-image" Src="@imageUrl" />                      
+        </div>
+        <div class="details-sub-header">
+            <h3 id="details-sub-header-left-item">@Name</h3>
+            <div id="social-media">
+                <a href=""><Image Src="" /></a>
+                <a href=""><Image Src="" /></a>
+                <a href=""><Image Src="" /></a>
+                <a href=""><Image Src="" /></a>
+            </div>
+        </div>
+        <div class="details-list">
+            @foreach( var em in eventVmList )
+            {
+                <div class="search-result">
+                    <Image Class="venue-image" Src="@em.ImageUrl" />
+                    <div>
+                        <ul style="list-style-type: none;">
+                            <li><p>@em.StartDate.ToString("D")</p></li>
+                            <li><h4>@em.Name</h4></li>
+                            <li><p>@($"{em.Venue}, {em.Location}")</p></li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 }
+else
+{
+    <div id="no-results">
+        <Image Src="noresults.png" Id="no-results-image" />
+    </div>
+}
+
 @code {
     [Parameter]
-    public string Id { get; set; } = string.Empty;
-    private Attraction? Attraction { get; set; }
+    public string Name { get; set; } = string.Empty;
+    private AttractionEvent AttractionEvent { get; set; } = new();
+    private List<EventViewModel> eventVmList = new();
+    bool display = true;
+    private string imageUrl = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync( )
     {
-        Attraction = await TicketMasterService.GetAttraction( Id );
+        AttractionEvent = await TicketMasterService.GetAttractionEventAsync( Name );
+        imageUrl = AttractionEvent.Embedded.Events.SelectMany(e => e.Images).First().Url;
+        eventVmList = AttractionEventDTO.ConvertToEventVmListDTO(AttractionEvent);
+        if ( eventVmList.Count == 0 )
+        {
+            display = false;
+        }        
     }
 
     public void GoBack()
     {
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo( "/" );
     }
 }

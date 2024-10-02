@@ -36,6 +36,8 @@ main {
             text-overflow: ellipsis;
         }
 
+
+
 @media (max-width: 393px) {
     .top-row {
         justify-content: space-between;
@@ -44,6 +46,8 @@ main {
         .top-row ::deep a, .top-row ::deep .btn-link {
             margin-left: 0;
         }
+
+
 }
 
 @media (min-width: 393px) {
@@ -74,4 +78,6 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+
+
 }
