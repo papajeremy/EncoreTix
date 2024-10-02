@@ -15,12 +15,15 @@
         </div>
         <div class="details-sub-header">
             <h3 id="details-sub-header-left-item">@Name</h3>
-            <div id="social-media">
-                <a href=""><Image Src="" /></a>
-                <a href=""><Image Src="" /></a>
-                <a href=""><Image Src="" /></a>
-                <a href=""><Image Src="" /></a>
-            </div>
+            @if(eventVmList != null )
+            {
+                <div id="social-media">
+                    <a href="@(eventVmList?.FirstOrDefault().HomePageUrl.DefaultIfEmpty())"><Image Src="website-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().LastFmUrl.DefaultIfEmpty())"><Image Src="lastfm-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().YouTubeUrl.DefaultIfEmpty())"><Image Src="youtube-icon.png" /></a>
+                    <a href="@(eventVmList?.FirstOrDefault().TwitterUrl.DefaultIfEmpty())"><Image Src="twitter-icon.png" /></a>
+                </div>
+            }            
         </div>
         <div class="details-list">
             @foreach( var em in eventVmList )
@@ -50,7 +53,7 @@ else
     [Parameter]
     public string Name { get; set; } = string.Empty;
     private AttractionEvent AttractionEvent { get; set; } = new();
-    private List<EventViewModel> eventVmList = new();
+    private List<EventViewModel>? eventVmList = new();
     bool display = true;
     private string imageUrl = string.Empty;
 

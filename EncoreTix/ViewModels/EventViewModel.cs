@@ -18,5 +18,5 @@ public class EventViewModel
     public string HomePageUrl { get; set; } = string.Empty;
     public string YouTubeUrl { get; set; } = string.Empty;
     public string TwitterUrl { get; set; } = string.Empty;
-    public string LastFm { get; set; } = string.Empty;
+    public string LastFmUrl { get; set; } = string.Empty;
 }
